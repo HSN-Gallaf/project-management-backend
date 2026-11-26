@@ -137,8 +137,88 @@ async function verifyUser(req, res) {
   }
 }
 
+const updateOneUser = async (req, res) => {
+  try {
+    const foundUser = await User.findById(req.params.userId);
+
+    if (!foundUser) return res.status(404).json({ message: "User not found" });
+
+    if (!foundUser._id.equals(req.user._id))
+      return res
+        .status(409)
+        .json({ message: "You are not authorize to update this user" });
+
+    const { username, firstName, lastName, profileImage } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      foundUser._id,
+      {
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        profileImage: profileImage,
+      },
+      { returnDocument: "after", runValidators: true },
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.log(err);
+    if (err.name === "ValidationError") {
+      return res.status(400).json({
+        message: err.message,
+      });
+    }
+    if (err.code === 11000) {
+      return res.status(409).json({
+        message: "Username already exists",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const changeUserRole = async (req, res) => {
+  try {
+    const foundUser = await User.findById(req.params.userId);
+
+    if (!foundUser) return res.status(404).json({ message: "User not found" });
+
+    if (req.user.role !== "role")
+      return res
+        .status(409)
+        .json({ message: "You are not authorize to update this user" });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      foundUser._id,
+      {
+        role: req.body.role,
+      },
+      { returnDocument: "after", runValidators: true },
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.log(err);
+    if (err.name === "ValidationError") {
+      return res.status(400).json({
+        message: err.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
   verifyUser,
+  updateOneUser,
+  changeUserRole,
 };
