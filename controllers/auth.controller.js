@@ -187,7 +187,7 @@ const changeUserRole = async (req, res) => {
 
     if (!foundUser) return res.status(404).json({ message: "User not found" });
 
-    if (req.user.role !== "role")
+    if (req.user.role !== "admin")
       return res
         .status(409)
         .json({ message: "You are not authorize to update this user" });
