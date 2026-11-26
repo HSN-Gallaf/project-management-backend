@@ -28,7 +28,15 @@ const createOneProject = async (req, res) => {
       owner: req.user._id,
     });
 
-    res.status(201).json(createdProject);
+    const updatedProject = await Project.findByIdAndUpdate(
+      createdProject._id,
+      {
+        $push: { members: req.user._id },
+      },
+      { returnDocument: "after" },
+    );
+
+    res.status(201).json(updatedProject);
   } catch (err) {
     console.log(err);
     if (err.name === "ValidationError") {
@@ -82,9 +90,8 @@ const getOneProject = async (req, res) => {
 const getAllMyProjects = async (req, res) => {
   try {
     const allMyProjects = await Project.find({
-      members: req.user._id,
+      members: { $in: [req.user._id] },
     });
-
     res.status(200).json(allMyProjects);
   } catch (err) {
     console.log(err);
@@ -186,6 +193,7 @@ const updateMembers = async (req, res) => {
 module.exports = {
   createOneProject,
   getAllProjects,
+  getOneProject,
   getAllMyProjects,
   updateOneProject,
   updateMembers,

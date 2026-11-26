@@ -15,11 +15,10 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      "Web Development",
-      "Mobile Development",
-      "Desktop Development",
-      "UI/UX Design",
-      "Other",
+      "web development",
+      "mobile development",
+      "desktop development",
+      "other",
     ],
   },
   status: {
