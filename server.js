@@ -9,6 +9,7 @@ const connectToDB = require("./config/db.js");
 // Routes Import
 const authRoutes = require("./routes/auth.routes");
 const projectRoutes = require("./routes/project.routes.js");
+const taskRoutes = require("./routes/task.routes.js");
 
 // Middleware
 app.use(
@@ -22,6 +23,7 @@ app.use(morgan("dev"));
 // Routes
 app.use("/auth", authRoutes);
 app.use("/projects", projectRoutes);
+app.use("/tasks", taskRoutes);
 
 // connect to database and listen on Port 3000
 async function startServer() {

@@ -144,15 +144,22 @@ const updateOneTask = async (req, res) => {
     } = req.body;
 
     // another idea for assignedTo is by selection(user might select himself or assigne it to another user)
-    const updatedTask = await Task.findByIdAndUpdate(req.params.taskId, {
-      name: name,
-      description: description,
-      startDate: startDate,
-      dueDate: dueDate,
-      priority: priority,
-      status: status,
-      //   assignedTo: assignedTo,
-    });
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.taskId,
+      {
+        name: name,
+        description: description,
+        startDate: startDate,
+        dueDate: dueDate,
+        priority: priority,
+        status: status,
+        //   assignedTo: assignedTo,
+      },
+      {
+        returnDocument: "after",
+        runValidators: true,
+      },
+    );
 
     res.status(200).json(updatedTask);
   } catch (err) {
